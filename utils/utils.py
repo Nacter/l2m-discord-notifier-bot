@@ -40,11 +40,11 @@ class Boss():
         (hours, minutes, seconds, is_valid) = self.last_time()
         moscow_time = self.respawn_time.strftime('%H:%M:%S') 
         if is_valid and hours == 0 and minutes == 0 and seconds == 0:
-            return(f"{moscow_time} **{self.name}** apareció en {self.location}  | prob. {self.chance}% | {moscow_time} мск")
+            return(f"{moscow_time} **{self.name}** apareció en {self.location}  | prob. {self.chance}% | {moscow_time} GMT+1")
         elif is_valid:
-            return(f"**{self.name}** en {self.location} dentro de {hours}h {minutes}m {seconds}s | prob. {self.chance}% | {moscow_time} мск")
+            return(f"**{self.name}** en {self.location} dentro de {hours}h {minutes}m {seconds}s | prob. {self.chance}% | {moscow_time} GMT+1")
         else: 
-            return(f"**{self.name}** ya fue hace {59-minutes}m {59-seconds}s  | prob {self.chance}% | {moscow_time} мск")
+            return(f"**{self.name}** ya fue hace {59-minutes}m {59-seconds}s  | prob {self.chance}% | {moscow_time} GMT+1")
 
     def export_msg(self):
         date_str = self.respawn_time.strftime('%Y-%m-%d %H:%M:%S') 
