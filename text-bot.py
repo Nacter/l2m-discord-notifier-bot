@@ -115,12 +115,14 @@ async def check_5m_for_text_notification(channel):
         soon_bosses = []
         delete_bosses = []
         for boss in sorted_bosses:
-            (hours, minutes, _, is_valid) = boss.last_time()
+            (hours, minutes, seconds, is_valid) = boss.last_time()
             if not is_valid:
                 delete_bosses.append(boss)
-            elif is_valid and hours == 0 and minutes == 5:
+            elif is_valid and hours == 0 and minutes == 5 and seconds == 0:
                 soon_bosses.append(boss)
-            elif is_valid and hours == 0 and minutes == 0:
+            elif is_valid and hours == 0 and minutes == 1 and seconds == 1:
+                soon_bosses.append(boss)
+            elif is_valid and hours == 0 and minutes == 0 and seconds == 1:
                 soon_bosses.append(boss)
             else:
                 pass
@@ -170,7 +172,7 @@ async def text_notification():
     channel = set_channel(client, sys.argv[2])
     while not client.is_closed():
         await check_5m_for_text_notification(channel)
-        await asyncio.sleep(30) # task runs every 1 seconds
+        await asyncio.sleep(1) # task runs every 1 seconds
 
 client.loop.create_task(text_notification())
 client.run(TOKEN)
