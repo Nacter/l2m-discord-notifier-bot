@@ -115,10 +115,14 @@ async def check_5m_for_text_notification(channel):
         soon_bosses = []
         delete_bosses = []
         for boss in sorted_bosses:
-            (hours, minutes, _, is_valid) = boss.last_time()
+            (hours, minutes, seconds, is_valid) = boss.last_time()
             if not is_valid:
                 delete_bosses.append(boss)
-            elif is_valid and hours == 0 and minutes <= 5:
+            elif is_valid and hours == 0 and minutes == 5 and seconds == 0:
+                soon_bosses.append(boss)
+            elif is_valid and hours == 0 and minutes == 1 and seconds == 1:
+                soon_bosses.append(boss)
+            elif is_valid and hours == 0 and minutes == 0 and seconds == 1:
                 soon_bosses.append(boss)
             else:
                 pass
@@ -130,8 +134,10 @@ async def check_5m_for_text_notification(channel):
             msg = "\n".join([boss.not_tagged() for boss in delete_bosses])
             result_msg = result_msg + '\n' + deleted_header + msg + '\n'
             for boss in delete_bosses:
-                del bosses[boss.name]
-            
+                boss = bosses_dict.get(boss.name)
+                boss.calc_respawn_time()
+                bosses[boss.name]=boss
+                export_all()
 
         if (len(soon_bosses)>0):
             closed_header = "@here\nPróximo boss en 5 minutos:\n"
@@ -166,7 +172,7 @@ async def text_notification():
     channel = set_channel(client, sys.argv[2])
     while not client.is_closed():
         await check_5m_for_text_notification(channel)
-        await asyncio.sleep(240) # task runs every 4min = 240 seconds
+        await asyncio.sleep(1) # task runs every 1 seconds
 
 client.loop.create_task(text_notification())
 client.run(TOKEN)
